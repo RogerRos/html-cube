@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cubo 3D Simple</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #loadingText {
+            color: green;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Crear la escena
+        const scene = new THREE.Scene();
+
+        // Crear la cámara
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        // Crear el renderizador
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Crear un cubo
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        // Animar el cubo
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotación del cubo
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+
+            // Renderizar la escena
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Ajustar la ventana al cambiar el tamaño
+        window.addEventListener('resize', function() {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+
+        // Mostrar el texto de carga con puntos secuenciales
+        const loadingText = document.createElement('div');
+        loadingText.id = 'loadingText';
+        loadingText.textContent = 'LOADING';
+        document.body.appendChild(loadingText);
+
+        let dots = '';
+        setInterval(() => {
+            dots += '.';
+            if (dots.length > 3) dots = '';
+            loadingText.textContent = `LOADING${dots}`;
+        }, 500);
+    </script>
+</body>
+</html>
